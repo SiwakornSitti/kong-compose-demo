@@ -17,6 +17,7 @@ plugins:
     config:
       key_names:
         - api-key
+        
 consumers:
   - username: keyauth-partner-a
     custom_id: custom_id_a
