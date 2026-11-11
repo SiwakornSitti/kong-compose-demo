@@ -26,19 +26,19 @@ docker compose logs -f kong-configure
 
 | Service | URL | Purpose |
 | --- | --- | --- |
-| Kong proxy | `http://localhost:8000` | API requests |
+| Kong proxy | `http://api.localhost:8000` | API requests through the custom development domain |
 | Kong Admin API | `http://localhost:8001` | Local Kong administration |
 | Konga | `http://localhost:1337` | Kong web UI; the local Kong connection is seeded on first run |
 
 ## API keys and Consumers
 
-The route `GET /partner` is configured in `kong.yml`:
+The route `GET /partner` accepts the custom development domain `api.localhost` (and `localhost` for compatibility). `api.localhost` resolves to `127.0.0.1` without a hosts-file entry.
 
 | Request API key | Kong Consumer | Consumer custom ID |
 | --- | --- | --- |
-| `api-key: 1` | `keyauth-partner-a` | `partner-a` |
-| `api-key: 2` | `keyauth-partner-b` | `partner-b` |
-| `api-key: 3` | `keyauth-partner-c` | `partner-c` |
+| `api-key: 1` | `keyauth-partner-a` | `custom_id_a` |
+| `api-key: 2` | `keyauth-partner-b` | `custom_id_b` |
+| `api-key: 3` | `keyauth-partner-c` | `custom_id_c` |
 
 The `key-auth` plugin validates the `api-key` header and identifies the Consumer. The upstream is `https://httpbin.org/anything`.
 
@@ -57,17 +57,17 @@ A **plugin** applies behavior to requests. The route's `key-auth` plugin validat
 | | Consumer | Plugin |
 | --- | --- | --- |
 | Role | Identifies the API client | Applies behavior to requests |
-| Example | `keyauth-partner-a` owns API key `1` and has `custom_id: partner-a` | `key-auth` checks `api-key` |
+| Example | `keyauth-partner-a` owns API key `1` and has `custom_id: custom_id_a` | `key-auth` checks `api-key` |
 | When used | Kong resolves it after successful authentication | Kong runs plugins at their configured scope and priority |
 
 For this route, `key-auth` identifies the Consumer after validating the API key.
 
-For example, the Consumer stores key `1` and has `custom_id: partner-a`. The route's `key-auth` plugin reads the `api-key` header and identifies that Consumer:
+For example, the Consumer stores key `1` and has `custom_id: custom_id_a`. The route's `key-auth` plugin reads the `api-key` header and identifies that Consumer:
 
 ```yaml
 consumers:
   - username: keyauth-partner-a
-    custom_id: partner-a
+    custom_id: custom_id_a
     keyauth_credentials:
       - key: "1"
 
@@ -96,9 +96,9 @@ Open `kong.http` in an HTTP client such as the VS Code REST Client extension and
 For a direct check:
 
 ```sh
-curl -i http://localhost:8000/partner -H 'api-key: 1'
-curl -i http://localhost:8000/partner -H 'api-key: 2'
-curl -i http://localhost:8000/partner -H 'api-key: 3'
+curl -i http://api.localhost:8000/partner -H 'api-key: 1'
+curl -i http://api.localhost:8000/partner -H 'api-key: 2'
+curl -i http://api.localhost:8000/partner -H 'api-key: 3'
 ```
 
 The upstream response shows the request headers received by httpbin. Kong does not add a `partner` header.

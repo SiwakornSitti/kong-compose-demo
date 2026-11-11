@@ -5,6 +5,9 @@ services:
     url: https://httpbin.org/anything
     routes:
       - name: partner-api
+        hosts:
+          - api.localhost
+          - localhost
         paths:
           - /partner
 

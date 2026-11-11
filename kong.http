@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:8000
+@baseUrl = http://api.localhost:8000
 
 ### API key 1 authenticates keyauth-partner-a
 GET {{baseUrl}}/partner
