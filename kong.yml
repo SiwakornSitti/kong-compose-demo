@@ -1,0 +1,29 @@
+_format_version: "3.0"
+
+services:
+  - name: partner-upstream
+    url: https://httpbin.org/anything
+    routes:
+      - name: partner-api
+        paths:
+          - /partner
+
+plugins:
+  - name: key-auth
+    route: partner-api
+    config:
+      key_names:
+        - api-key
+consumers:
+  - username: keyauth-partner-a
+    custom_id: custom_id_a
+    keyauth_credentials:
+      - key: "1"
+  - username: keyauth-partner-b
+    custom_id: custom_id_b
+    keyauth_credentials:
+      - key: "2"
+  - username: keyauth-partner-c
+    custom_id: custom_id_c
+    keyauth_credentials:
+      - key: "3"
